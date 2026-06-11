@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.calmora.controller.TestControllerTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.677 s -- in com.calmora.controller.TestControllerTest
