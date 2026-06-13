@@ -7,27 +7,35 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "journal_entries")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class JournalEntry {
+@NoArgsConstructor
+@Entity
+@Table(name = "article")
+public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "description")
+    private String description;
+
+    private String imageUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    private String category;
+
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+
 }

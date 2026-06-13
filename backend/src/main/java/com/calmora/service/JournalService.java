@@ -3,8 +3,12 @@ package com.calmora.service;
 import com.calmora.DTO.journal.JournalRequestDTO;
 import com.calmora.DTO.journal.JournalResponseDTO;
 import com.calmora.model.JournalEntry;
+import com.calmora.model.User;
 import com.calmora.repository.JournalRepository;
+import com.calmora.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,10 +19,20 @@ public class JournalService {
 
     @Autowired
     private JournalRepository journalRepository;
+    @Autowired
+    private UserRepository UserRepository;
 
     public JournalResponseDTO addJournal(
             JournalRequestDTO request
     ) {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = auth.getName();
+
+        User user = UserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         JournalEntry journal = new JournalEntry();
 

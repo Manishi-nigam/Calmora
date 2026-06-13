@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -37,4 +38,10 @@ public class User {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt= LocalDateTime.now();
+
+    @OneToMany(mappedBy = "user")
+    private List<Mood> moods;
+
+    @OneToMany(mappedBy ="user" )
+    private List<JournalEntry> journals;
 }
