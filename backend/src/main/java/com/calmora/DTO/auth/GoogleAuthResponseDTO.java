@@ -11,4 +11,5 @@ public class GoogleAuthResponseDTO {
     private String message;
     private String username;
     private String email;
+    private String token;
 }

@@ -3,6 +3,7 @@ package com.calmora.controller;
 import com.calmora.DTO.auth.*;
 import com.calmora.model.User;
 import com.calmora.service.UserService;
+import com.calmora.Security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {
@@ -76,7 +80,7 @@ public class AuthController {
         if (username == null || email == null || username.isBlank() || email.isBlank()) {
             return ResponseEntity.badRequest().body(
                     new GoogleAuthResponseDTO(
-                            false,"email already exists",null,null
+                            false,"email already exists",null,null,null
                     )
             );
         }
@@ -85,11 +89,12 @@ public class AuthController {
         User existingUser = userService.findByEmail(email);
 
         if (existingUser != null) {
-             return ResponseEntity.badRequest().body(
-                     new GoogleAuthResponseDTO(
-                             true,"Login Successful",
-                             existingUser.getUsername(), existingUser.getEmail()
-                     )
+             String token = jwtService.generateToken(existingUser.getEmail());
+             return ResponseEntity.ok(
+                      new GoogleAuthResponseDTO(
+                              true,"Login Successful",
+                              existingUser.getUsername(), existingUser.getEmail(), token
+                      )
              );
         }
 
@@ -103,17 +108,20 @@ public class AuthController {
                             false,
                             "Registration failed.",
                             null,
+                            null,
                             null
                     )
             );
         }
 
+        String token = jwtService.generateToken(newUser.getEmail());
         return ResponseEntity.ok(
                 new GoogleAuthResponseDTO(
                         true,
                         "Login successful!",
                         newUser.getUsername(),
-                        newUser.getEmail()
+                        newUser.getEmail(),
+                        token
                 )
         );
     }
