@@ -12,13 +12,8 @@ import java.util.Map;
 @RequestMapping("/api/test")
 public class TestController {
 
-    @GetMapping("/health")
-    public Map<String, Object> test() {
-
-        return Map.of(
-                "status", "UP",
-                "message", "Calmora API is running successfully",
-                "timestamp", LocalDateTime.now()
-        );
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello";
     }
 }
