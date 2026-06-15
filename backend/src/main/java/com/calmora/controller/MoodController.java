@@ -14,17 +14,14 @@ public class MoodController {
 
     private final MoodService moodService;
 
-
     public MoodController(MoodService moodService) {
         this.moodService = moodService;
     }
-
 
     @PostMapping
     public MoodResponseDTO addMood(@RequestBody MoodRequestDTO mood) {
         return moodService.addMood(mood);
     }
-
 
     @GetMapping
     public List<MoodResponseDTO> getAllMoods() {
