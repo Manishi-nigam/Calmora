@@ -52,14 +52,22 @@ public class MoodService {
 
     public List<MoodResponseDTO> getAllMoods() {
 
-        return moodRepository.findAll()
-                .stream()
-                .map(mood -> new MoodResponseDTO(
-                        mood.getId(),
-                        mood.getMoodType(),
-                        mood.getCreatedAt()
-                ))
-                .toList();
-    }
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = UserRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return moodRepository.findByUser(user)
+            .stream()
+            .map(mood -> new MoodResponseDTO(
+                    mood.getId(),
+                    mood.getMoodType(),
+                    mood.getCreatedAt()
+            ))
+            .toList();
+}
 
 }

@@ -19,19 +19,18 @@ public class JournalService {
 
     @Autowired
     private JournalRepository journalRepository;
-    @Autowired
-    private UserRepository UserRepository;
 
-    public JournalResponseDTO addJournal(
-            JournalRequestDTO request
-    ) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public JournalResponseDTO addJournal(JournalRequestDTO request) {
 
         Authentication auth =
                 SecurityContextHolder.getContext().getAuthentication();
 
         String email = auth.getName();
 
-        User user = UserRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         JournalEntry journal = new JournalEntry();
@@ -39,9 +38,9 @@ public class JournalService {
         journal.setTitle(request.getTitle());
         journal.setContent(request.getContent());
         journal.setCreatedAt(LocalDateTime.now());
+        journal.setUser(user);
 
-        JournalEntry savedJournal =
-                journalRepository.save(journal);
+        JournalEntry savedJournal = journalRepository.save(journal);
 
         return new JournalResponseDTO(
                 savedJournal.getId(),
@@ -53,7 +52,15 @@ public class JournalService {
 
     public List<JournalResponseDTO> getAllJournals() {
 
-        return journalRepository.findAll()
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return journalRepository.findByUser(user)
                 .stream()
                 .map(journal -> new JournalResponseDTO(
                         journal.getId(),
