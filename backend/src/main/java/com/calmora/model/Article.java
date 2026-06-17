@@ -37,5 +37,9 @@ public class Article {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    private String author;
+
+    private String keyTakeaway;
+
 
 }

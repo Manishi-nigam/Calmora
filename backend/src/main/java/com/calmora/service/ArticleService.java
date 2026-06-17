@@ -42,6 +42,8 @@ public class ArticleService {
         article.setContent(req.getContent());
         article.setCategory(req.getCategory());
         article.setCreatedAt(LocalDateTime.now());
+        article.setAuthor(req.getAuthor());
+        article.setKeyTakeaway(req.getKeyTakeaway());
 
         Article savedArticle = articleRepository.save(article);
 
@@ -52,7 +54,9 @@ public class ArticleService {
                 savedArticle.getImageUrl(),
                 savedArticle.getContent(),
                 savedArticle.getCategory(),
-                savedArticle.getCreatedAt()
+                savedArticle.getCreatedAt(),
+                savedArticle.getAuthor(),
+                savedArticle.getKeyTakeaway()
         );
     }
 
@@ -68,7 +72,9 @@ public class ArticleService {
                         article.getImageUrl(),
                         article.getContent(),
                         article.getCategory(),
-                        article.getCreatedAt()
+                        article.getCreatedAt(),
+                        article.getAuthor(),
+                        article.getKeyTakeaway()
                 ))
                 .toList();
     }
@@ -86,7 +92,9 @@ public class ArticleService {
                 article.getImageUrl(),
                 article.getContent(),
                 article.getCategory(),
-                article.getCreatedAt()
+                article.getCreatedAt(),
+                article.getAuthor(),
+                article.getKeyTakeaway()
         );
     }
 }

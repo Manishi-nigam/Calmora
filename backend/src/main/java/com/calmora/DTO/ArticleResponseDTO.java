@@ -27,4 +27,8 @@ public class ArticleResponseDTO {
 
     public LocalDateTime createdAt;
 
+    public String author;
+
+    public String keyTakeaway;
+
 }

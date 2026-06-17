@@ -17,4 +17,8 @@ public class ArticleRequestDTO {
     public String content;
 
     public String category;
+
+    public String author;
+
+    public String keyTakeaway;
 }
