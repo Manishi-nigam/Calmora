@@ -2,69 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e501e09-0a17-462e-967e-1856809a55a7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.classpath" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/AiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/AiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/WisdomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/controller/WisdomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/model/Wisdom.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/model/Wisdom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/repository/WisdomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/repository/WisdomRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/calmora/service/WisdomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/calmora/service/WisdomService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.prettierrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.vscode/extensions.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.vscode/launch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.vscode/mcp.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.vscode/tasks.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/public/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.config.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/components/navbar/navbar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/components/navbar/navbar.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/components/navbar/navbar.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/guards/auth.guard.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/ai-chat/ai-chat.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/ai-chat/ai-chat.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/ai-chat/ai-chat.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/articles/articles.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/articles/articles.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/articles/articles.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/dashboard/dashboard.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/dashboard/dashboard.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/dashboard/dashboard.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/login/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/login/login.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/login/login.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/profile/profile.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/profile/profile.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/profile/profile.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/register/register.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/register/register.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/register/register.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/videos/videos.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/videos/videos.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/videos/videos.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/ai.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/auth.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/journal.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/mood.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/environments/environment.prod.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/environments/environment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/styles.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.app.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.spec.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,10 +16,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 1
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Manishi-nigam"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Manishi-nigam/Calmora.git",
+    "accountId": "0726a31d-564d-4ed8-9337-40f17bd30415"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="3Ew6Tx8to3TzF8cfcAalX2ZKO1T" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -89,7 +43,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true"
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/manis/OneDrive/Desktop/fullstack/calmora-app"
   }
 }]]></component>
   <component name="TaskManager">

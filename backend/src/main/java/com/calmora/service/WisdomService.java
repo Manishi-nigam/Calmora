@@ -5,6 +5,8 @@ import com.calmora.repository.WisdomRepository;
 import com.calmora.DTO.WisdomRequestDTO;
 import com.calmora.DTO.WisdomResponseDTO;
 import com.calmora.model.Wisdom;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,4 +45,23 @@ public class WisdomService {
     public void deleteWisdom(Long id) {
         wisdomRepository.deleteById(id);
     }
+
+    public WisdomResponseDTO getDailyWisdom() {
+
+    List<Wisdom> wisdoms = wisdomRepository.findAll();
+
+    if (wisdoms.isEmpty()) {
+        throw new RuntimeException("No wisdom quotes available");
+    }
+
+    int day = LocalDate.now().getDayOfYear();
+
+    Wisdom wisdom = wisdoms.get(day % wisdoms.size());
+
+    return new WisdomResponseDTO(
+            wisdom.getId(),
+            wisdom.getQuote(),
+            wisdom.getAuthor()
+    );
+}
 }
