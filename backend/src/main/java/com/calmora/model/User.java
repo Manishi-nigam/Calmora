@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,4 +45,13 @@ public class User {
 
     @OneToMany(mappedBy ="user" )
     private List<JournalEntry> journals;
+
+    private String phoneNumber;
+
+    private String gender;
+
+    private LocalDate dateOfBirth;
+
+    private String profileImageUrl;
+
 }
