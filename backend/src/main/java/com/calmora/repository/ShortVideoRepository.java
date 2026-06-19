@@ -3,7 +3,9 @@ package com.calmora.repository;
 import com.calmora.model.ShortVideo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface ShortVideoRepository extends JpaRepository<ShortVideo,Long> {
+    List<ShortVideo> findByCategory(String category);
 }

@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MoodRepository extends JpaRepository<Mood, Long> {
     List<Mood> findByUser(User user);
+    List<Mood> findTop5ByUserOrderByCreatedAtDesc(User user);
 }
