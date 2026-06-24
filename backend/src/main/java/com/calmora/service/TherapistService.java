@@ -50,7 +50,9 @@ public class TherapistService {
                 therapist.getBio(),
                 therapist.getEmail(),
                 therapist.getClientsServed(),
-                therapist.getConsultationFee()
+                therapist.getConsultationFee(),
+                therapist.getQualifications(),
+                therapist.getSpecializations()
         );
     }
 }
