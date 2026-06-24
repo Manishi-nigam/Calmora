@@ -28,7 +28,8 @@ public class TherapistService {
                         t.getSpecialization(),
                         t.getExperience(),
                         t.getImageUrl(),
-                        t.getRating()
+                        t.getQualifications(),
+                        t.getSpecializations()
                 ))
                 .toList();
     }
@@ -47,8 +48,8 @@ public class TherapistService {
                 therapist.getImageUrl(),
                 therapist.getBio(),
                 therapist.getEmail(),
-                therapist.getPhoneNumber(),
-                therapist.getRating()
+                therapist.getClientsServed(),
+                therapist.getConsultationFee()
         );
     }
 }

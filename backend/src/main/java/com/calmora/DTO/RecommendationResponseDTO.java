@@ -14,7 +14,7 @@ public class RecommendationResponseDTO {
 
     private String category;
 
-    private List<ArticleResponseDTO> articles;
-
-    private List<ShortResponseDTO> shorts;
+    private List<ArticleResponseDTO> recommendedArticles;
+    
+    private List<ShortResponseDTO> recommendedShorts;
 }

@@ -23,7 +23,7 @@ public class TherapistDetailsDTO {
 
     private String email;
 
-    private String phoneNumber;
-
-    private Double rating;
+    private Integer clientsServed;
+    
+    private String consultationFee;
 }
