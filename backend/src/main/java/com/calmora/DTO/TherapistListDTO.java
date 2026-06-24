@@ -23,4 +23,6 @@ public class TherapistListDTO {
     private List<String> qualifications;
     
     private List<String> specializations;
+
+    private String consultationFee;
 }

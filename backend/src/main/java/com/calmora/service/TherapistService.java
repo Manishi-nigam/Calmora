@@ -29,7 +29,8 @@ public class TherapistService {
                         t.getExperience(),
                         t.getImageUrl(),
                         t.getQualifications(),
-                        t.getSpecializations()
+                        t.getSpecializations(),
+                        t.getConsultationFee()
                 ))
                 .toList();
     }
