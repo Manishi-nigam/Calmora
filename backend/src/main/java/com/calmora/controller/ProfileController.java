@@ -35,7 +35,7 @@ public class ProfileController {
         return profileService.updateProfile(request);
     }
 
-    @PostMapping("image")
+    @PostMapping("/image")
     public String uploadProfileImage(
         @RequestParam("file") MultipartFile file
     ) throws IOException {
