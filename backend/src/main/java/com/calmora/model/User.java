@@ -50,7 +50,7 @@ public class User {
 
     private String gender;
 
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     private String profileImageUrl;
 

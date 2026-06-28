@@ -14,7 +14,7 @@ public class ProfileResponseDTO {
     private String email;
     private String phoneNumber;
     private String gender;
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
     private String profileImageUrl;
 
     
