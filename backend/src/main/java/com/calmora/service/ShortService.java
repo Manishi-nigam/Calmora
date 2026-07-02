@@ -1,51 +1,48 @@
 package com.calmora.service;
 
-
 import com.calmora.DTO.ShortRequestDTO;
 import com.calmora.DTO.ShortResponseDTO;
-import com.calmora.model.User;
-import com.calmora.repository.ShortVideoRepository;
-import com.calmora.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
+import com.calmora.DTO.VideoUploadResponseDTO;
 import com.calmora.model.ShortVideo;
+import com.calmora.repository.ShortVideoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ShortService {
-    @Autowired
-    private UserRepository UserRepository;
 
+    private final ShortVideoRepository shortVideoRepository;
+    private final CloudinaryService cloudinaryService;
 
-    public ShortVideoRepository shortVideoRepository;
+    public ShortService(ShortVideoRepository shortVideoRepository,
+                        CloudinaryService cloudinaryService) {
 
-    ShortService(ShortVideoRepository shortVideoRepository){
         this.shortVideoRepository = shortVideoRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
-    public ShortResponseDTO createShort(ShortRequestDTO req) {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
+    public ShortResponseDTO addShort(ShortRequestDTO req,
+                                     MultipartFile video) throws IOException {
 
-        String email = auth.getName();
+        VideoUploadResponseDTO uploadResponse =
+                cloudinaryService.uploadVideo(video);
 
         ShortVideo shortVideo = new ShortVideo();
 
         shortVideo.setTitle(req.getTitle());
         shortVideo.setDescription(req.getDescription());
-        shortVideo.setThumbnailUrl(req.getThumbnailUrl());
-        shortVideo.setVideoUrl(req.getVideoUrl());
-        shortVideo.setDuration(req.getDuration());
         shortVideo.setCategory(req.getCategory());
+
+        shortVideo.setVideoUrl(uploadResponse.getVideoUrl());
+        shortVideo.setThumbnailUrl(uploadResponse.getThumbnailUrl());
+        shortVideo.setPublicId(uploadResponse.getPublicId());
+        shortVideo.setDuration(uploadResponse.getDuration());
+
         shortVideo.setCreatedAt(LocalDateTime.now());
-
-        User user = UserRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
 
         ShortVideo savedShortVideo = shortVideoRepository.save(shortVideo);
 
@@ -65,23 +62,22 @@ public class ShortService {
         List<ShortVideo> shortVideos = shortVideoRepository.findAll();
 
         return shortVideos.stream()
-                .map(shortVideoVideo -> new ShortResponseDTO(
-                        shortVideoVideo.getId(),
-                        shortVideoVideo.getTitle(),
-                        shortVideoVideo.getDescription(),
-                        shortVideoVideo.getThumbnailUrl(),
-                        shortVideoVideo.getVideoUrl(),
-                        shortVideoVideo.getDuration(),
-                        shortVideoVideo.getCategory()
+                .map(shortVideo -> new ShortResponseDTO(
+                        shortVideo.getId(),
+                        shortVideo.getTitle(),
+                        shortVideo.getDescription(),
+                        shortVideo.getThumbnailUrl(),
+                        shortVideo.getVideoUrl(),
+                        shortVideo.getDuration(),
+                        shortVideo.getCategory()
                 ))
                 .toList();
     }
 
-
     public ShortResponseDTO getShortById(Long id) {
 
         ShortVideo shortVideo = shortVideoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Short not found"));;
+                .orElseThrow(() -> new RuntimeException("Short not found"));
 
         return new ShortResponseDTO(
                 shortVideo.getId(),
@@ -93,5 +89,4 @@ public class ShortService {
                 shortVideo.getCategory()
         );
     }
-
 }

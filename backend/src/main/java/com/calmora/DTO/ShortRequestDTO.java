@@ -11,8 +11,5 @@ public class ShortRequestDTO {
 
     public String title;
     public String description;
-    public String thumbnailUrl;
-    public String videoUrl;
-    public Integer duration;
     public String category;
 }

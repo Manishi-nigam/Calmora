@@ -33,6 +33,8 @@ public class ShortVideo {
 
     private LocalDateTime createdAt;
 
+    private String publicId;
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
