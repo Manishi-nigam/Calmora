@@ -19,10 +19,7 @@ public class ShortVideoController {
 
     private final ShortService shortService;
 
-    @PostMapping("/test")
-public String test() {
-    return "Working";
-}
+    
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ShortResponseDTO> addShort(
