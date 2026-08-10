@@ -31,6 +31,8 @@ public class GeminiService {
     public String getReply(String systemInstructionText, List<AiMessage> history, String currentUserMessageText) {
         try {
             System.out.println("[AI-DEBUG] GeminiService reached");
+            System.out.println("[AI-DEBUG] Gemini API key configured = " + (apiKey != null && !apiKey.isBlank()));
+            System.out.println("[AI-DEBUG] GEMINI_API_KEY length = " + (apiKey != null ? apiKey.length() : 0));
             
             // Using a stable supported model for conversational flows
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
