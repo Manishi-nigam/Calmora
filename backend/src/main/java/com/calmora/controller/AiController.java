@@ -24,10 +24,13 @@ public class AiController {
         String userMessage = request.getMessage().trim();
 
         try {
+            System.out.println("[AI-DEBUG] AiController reached");
+            
             // Try Gemini AI first using Context Service
             String aiReply = conversationContextService.processUserMessage(userMessage);
             
             if (aiReply != null && !aiReply.isBlank()) {
+                System.out.println("[AI-DEBUG] FINAL RESPONSE SOURCE = GEMINI");
                 // Check if Gemini flagged as irrelevant (keep this logic if you want)
                 if (aiReply.trim().toUpperCase().contains("IRRELEVANT")) {
                     return new AiResponseDTO("I'm here to support your mental wellness. Let's talk about how you're feeling! 🌈");
@@ -39,46 +42,13 @@ public class AiController {
         }
 
         // Fallback to rule-based response
+        System.out.println("[AI-DEBUG] FALLBACK getRuleBasedReply() CALLED");
+        System.out.println("[AI-DEBUG] FINAL RESPONSE SOURCE = FALLBACK");
         return new AiResponseDTO(getRuleBasedReply(userMessage));
     }
 
     private String getRuleBasedReply(String userMessage) {
-        String msg = userMessage.toLowerCase();
-
-        // Handle negation first
-        if (msg.contains("not feeling good") || msg.contains("not happy") || msg.contains("don't feel good")) {
-            return "I'm sorry you're not feeling your best today. I'm here for you. 💙";
-        }
-
-        if (msg.contains("stress") || msg.contains("pressure")) {
-            return "Try deep breathing for 2 minutes. Close your eyes and count to 5 slowly. You're doing your best! 💪";
-
-        } else if (msg.contains("sad") || msg.contains("unhappy") || msg.contains("depressed")) {
-            return "It's okay to feel sad sometimes. Try writing down 3 things you're grateful for. I'm here for you. 💙";
-
-        } else if (msg.contains("anxious") || msg.contains("anxiety") || msg.contains("worried")) {
-            return "Try the 5-4-3-2-1 grounding technique: notice 5 things you see, 4 you hear, 3 you touch, 2 you smell, 1 you taste. 🌿";
-
-        } else if (msg.contains("angry") || msg.contains("frustrated") || msg.contains("irritated")) {
-            return "It's completely understandable to feel that way. Take a moment to breathe deeply. Count to 10 before reacting. 🧘";
-
-        } else if (msg.contains("tired") || msg.contains("exhausted") || msg.contains("sleep")) {
-            return "Rest is important. Try calming music or dim your lights. A 20-minute nap can help! 😴";
-
-        } else if (msg.contains("happy") || msg.contains("good") || msg.contains("great")) {
-            return "I'm glad to hear that! Keep focusing on what brings you joy. 🎉";
-
-        } else if (msg.contains("lonely") || msg.contains("alone")) {
-            return "You are valued and loved. Try reaching out to someone you trust. I'm always here! 🤝";
-
-        } else if (msg.contains("hello") || msg.contains("hi") || msg.contains("hey")) {
-            return "Hello! 👋 Welcome to Calmora. Tell me how you're feeling today!";
-
-        } else if (msg.contains("thank")) {
-            return "You're welcome! Taking care of your mental health is a sign of strength. 💛";
-
-        } else {
-            return "I hear you. I'm here to support you. Could you tell me a little more? 🌈";
-        }
+        System.out.println("[AI-DEBUG] !!! RULE BASED FALLBACK EXECUTED !!!");
+        return "I'm having trouble connecting to Calmora AI right now. Please try again.";
     }
 }

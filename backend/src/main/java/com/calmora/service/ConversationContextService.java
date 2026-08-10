@@ -34,6 +34,7 @@ public class ConversationContextService {
     private static final int MAX_CONTEXT_MESSAGES = 10;
 
     public String processUserMessage(String userMessageText) {
+        System.out.println("[AI-DEBUG] ConversationContextService reached");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)

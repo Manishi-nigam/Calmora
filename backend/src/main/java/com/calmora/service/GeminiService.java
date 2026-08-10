@@ -30,6 +30,8 @@ public class GeminiService {
      */
     public String getReply(String systemInstructionText, List<AiMessage> history, String currentUserMessageText) {
         try {
+            System.out.println("[AI-DEBUG] GeminiService reached");
+            
             // Using a stable supported model for conversational flows
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
 
@@ -67,6 +69,11 @@ public class GeminiService {
             body.put("systemInstruction", systemInstruction);
             body.put("contents", contents);
             body.put("generationConfig", generationConfig);
+            
+            System.out.println("[AI-DEBUG] CALLING GEMINI");
+            System.out.println("[AI-DEBUG] MODEL = gemini-1.5-flash");
+            System.out.println("[AI-DEBUG] API URL = https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent");
+            System.out.println("[AI-DEBUG] REQUEST BODY = " + body);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -79,29 +86,40 @@ public class GeminiService {
                     (Class<Map<String, Object>>)(Class<?>)Map.class);
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                System.out.println("[AI-DEBUG] GEMINI RESPONSE RECEIVED");
                 String text = extractText(response.getBody());
                 if (text != null && !text.isBlank()) {
                     return text.trim();
                 }
             }
 
-            return null;
+            throw new RuntimeException("Gemini returned OK but body was null or empty");
 
         } catch (org.springframework.web.client.ResourceAccessException e) {
             System.err.println("Gemini API timeout: " + e.getMessage());
             return null;
 
         } catch (org.springframework.web.client.HttpClientErrorException e) {
-            System.err.println("Gemini API client error (" + e.getStatusCode() + "): " + e.getResponseBodyAsString());
-            return null;
+            System.err.println("[AI-DEBUG] GEMINI ERROR");
+            System.err.println("[AI-DEBUG] Gemini exception class: " + e.getClass().getName());
+            System.err.println("[AI-DEBUG] Gemini exception message: " + e.getMessage());
+            System.err.println("[AI-DEBUG] HTTP status: " + e.getStatusCode());
+            System.err.println("[AI-DEBUG] Response body: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Gemini API client error", e);
 
         } catch (org.springframework.web.client.HttpServerErrorException e) {
-            System.err.println("Gemini API server error (" + e.getStatusCode() + "): " + e.getMessage());
-            return null;
+            System.err.println("[AI-DEBUG] GEMINI ERROR");
+            System.err.println("[AI-DEBUG] Gemini exception class: " + e.getClass().getName());
+            System.err.println("[AI-DEBUG] Gemini exception message: " + e.getMessage());
+            System.err.println("[AI-DEBUG] HTTP status: " + e.getStatusCode());
+            System.err.println("[AI-DEBUG] Response body: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Gemini API server error", e);
 
         } catch (Exception e) {
-            System.err.println("Gemini API unexpected error: " + e.getMessage());
-            return null;
+            System.err.println("[AI-DEBUG] GEMINI ERROR");
+            System.err.println("[AI-DEBUG] Gemini exception class: " + e.getClass().getName());
+            System.err.println("[AI-DEBUG] Gemini exception message: " + e.getMessage());
+            throw new RuntimeException("Gemini API unexpected error", e);
         }
     }
 
