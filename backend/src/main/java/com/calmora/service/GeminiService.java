@@ -1,5 +1,6 @@
 package com.calmora.service;
 
+import com.calmora.model.AiMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.http.*;
@@ -25,30 +26,46 @@ public class GeminiService {
     }
 
     /**
-     * Sends a raw prompt to Google Gemini API and returns the reply text.
+     * Sends a structured prompt to Google Gemini API and returns the reply text.
      */
-    public String getReply(String prompt) {
+    public String getReply(String systemInstructionText, List<AiMessage> history, String currentUserMessageText) {
         try {
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+            // Using a stable supported model for conversational flows
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
 
-            Map<String, Object> part = new HashMap<>();
-            part.put("text", prompt);
+            // 1. System Instruction Node
+            Map<String, Object> systemInstruction = new HashMap<>();
+            systemInstruction.put("parts", List.of(Map.of("text", systemInstructionText)));
 
-            Map<String, Object> content = new HashMap<>();
-            content.put("parts", List.of(part));
+            // 2. Contents Array (History + Current Message)
+            List<Map<String, Object>> contents = new ArrayList<>();
 
-            // Add generation config for consistency
+            if (history != null) {
+                for (AiMessage msg : history) {
+                    Map<String, Object> content = new HashMap<>();
+                    String role = msg.getRole().equalsIgnoreCase("USER") ? "user" : "model";
+                    content.put("role", role);
+                    content.put("parts", List.of(Map.of("text", msg.getContent())));
+                    contents.add(content);
+                }
+            }
+
+            // Current message
+            Map<String, Object> currentContent = new HashMap<>();
+            currentContent.put("role", "user");
+            currentContent.put("parts", List.of(Map.of("text", currentUserMessageText)));
+            contents.add(currentContent);
+
+            // 3. Generation Config
             Map<String, Object> generationConfig = new HashMap<>();
             generationConfig.put("temperature", 0.2); // Low temperature for consistency
             generationConfig.put("topK", 40);
             generationConfig.put("topP", 0.95);
 
-            // Add safety settings (optional, but good practice for mental health)
-            List<Map<String, Object>> safetySettings = new ArrayList<>();
-            // We can configure safety settings if needed, but defaults are usually fine
-
+            // 4. Assemble Request Body
             Map<String, Object> body = new HashMap<>();
-            body.put("contents", List.of(content));
+            body.put("systemInstruction", systemInstruction);
+            body.put("contents", contents);
             body.put("generationConfig", generationConfig);
 
             HttpHeaders headers = new HttpHeaders();
@@ -75,7 +92,7 @@ public class GeminiService {
             return null;
 
         } catch (org.springframework.web.client.HttpClientErrorException e) {
-            System.err.println("Gemini API client error (" + e.getStatusCode() + "): " + e.getMessage());
+            System.err.println("Gemini API client error (" + e.getStatusCode() + "): " + e.getResponseBodyAsString());
             return null;
 
         } catch (org.springframework.web.client.HttpServerErrorException e) {

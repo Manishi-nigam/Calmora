@@ -49,20 +49,19 @@ public class ConversationContextService {
 
         // 2. Fetch history
         List<AiMessage> allMessages = messageRepository.findByConversationOrderByCreatedAtAsc(conversation);
-
-        // 3. Select recent messages and generate summary if needed
         List<AiMessage> recentMessages;
-        String conversationSummary = null;
 
         if (allMessages.size() > MAX_CONTEXT_MESSAGES) {
             recentMessages = allMessages.subList(allMessages.size() - MAX_CONTEXT_MESSAGES, allMessages.size());
-            conversationSummary = "The user has been having a continuous conversation. Previous context might be omitted for brevity.";
         } else {
             recentMessages = allMessages;
         }
 
-        // 4. Build Prompt
-        String prompt = promptBuilder.buildMentalHealthPrompt(recentMessages, conversationSummary, userMessageText);
+        // 3. Extract Conversational Preferences
+        boolean disableAdvice = checkAdvicePreference(recentMessages, userMessageText);
+        
+        // 4. Get System Instructions
+        String systemInstruction = promptBuilder.getSystemInstructions(disableAdvice);
 
         // ==========================================
         // DEVELOPMENT LOGGING
@@ -71,35 +70,46 @@ public class ConversationContextService {
         System.out.println("userId: " + user.getId());
         System.out.println("conversationKey: " + conversation.getId());
         System.out.println("historySize: " + recentMessages.size());
-        System.out.println("\n--- PROMPT START ---\n" + prompt + "\n--- PROMPT END ---");
+        System.out.println("disableAdvice: " + disableAdvice);
+        System.out.println("CURRENT MESSAGE: " + userMessageText);
         // ==========================================
 
-        // 5. Call LLM
-        String aiResponseText = geminiService.getReply(prompt);
+        // 5. Call LLM natively
+        String aiResponseText = geminiService.getReply(systemInstruction, recentMessages, userMessageText);
 
         // ==========================================
-        // RESPONSE VALIDATION & RETRY
+        // RESPONSE VALIDATION & RETRY (LOOP PREVENTION)
         // ==========================================
         if (aiResponseText != null && !aiResponseText.isBlank()) {
             boolean isUserNegative = userMessageText.toLowerCase().contains("not") 
                     || userMessageText.toLowerCase().contains("bad") 
                     || userMessageText.toLowerCase().contains("irritated")
                     || userMessageText.toLowerCase().contains("angry")
-                    || userMessageText.toLowerCase().contains("sad");
+                    || userMessageText.toLowerCase().contains("sad")
+                    || userMessageText.toLowerCase().contains("frustrated");
                     
             boolean isResponseOverlyPositive = aiResponseText.toLowerCase().contains("that's wonderful") 
                     || aiResponseText.toLowerCase().contains("celebrate")
                     || aiResponseText.toLowerCase().contains("that's great")
                     || aiResponseText.toLowerCase().contains("keep doing what makes you feel good");
+                    
+            boolean isResponseLooping = false;
+            if (!recentMessages.isEmpty()) {
+                String lastAiMsg = recentMessages.get(recentMessages.size() - 1).getContent();
+                if (recentMessages.get(recentMessages.size() - 1).getRole().equals("ASSISTANT") && 
+                    aiResponseText.equals(lastAiMsg)) {
+                    isResponseLooping = true;
+                }
+            }
 
-            if (isUserNegative && isResponseOverlyPositive) {
+            if ((isUserNegative && isResponseOverlyPositive) || isResponseLooping || aiResponseText.toLowerCase().contains("could you tell me a little more")) {
                 System.out.println("WARNING: Context validation failed! Regenerating response...");
                 
-                String correctionPrompt = prompt + "\n\n" + 
-                        "SYSTEM CORRECTION: The previous response you generated was overly positive and contradicted the user's negative state. " +
-                        "Generate a new response that directly acknowledges the user's stated emotion and does NOT force positivity.";
+                String correctionInstruction = systemInstruction + "\n\n" + 
+                        "SYSTEM CORRECTION: The previous response you generated was either a repetitive loop, overly positive, or a generic 'tell me more'. " +
+                        "Generate a completely new response that directly acknowledges the user's stated emotion, DOES NOT repeat yourself, DOES NOT ask them to repeat themselves, and DOES NOT force positivity.";
                 
-                aiResponseText = geminiService.getReply(correctionPrompt);
+                aiResponseText = geminiService.getReply(correctionInstruction, recentMessages, userMessageText);
             }
         }
 
@@ -109,7 +119,7 @@ public class ConversationContextService {
             return null; // Let controller handle fallback
         }
 
-        // 6. Save the new messages to DB
+        // 6. Save BOTH messages to DB immediately to preserve sequence
         AiMessage userMsg = new AiMessage();
         userMsg.setConversation(conversation);
         userMsg.setRole("USER");
@@ -123,5 +133,21 @@ public class ConversationContextService {
         messageRepository.save(assistantMsg);
 
         return aiResponseText;
+    }
+    
+    private boolean checkAdvicePreference(List<AiMessage> history, String currentMessage) {
+        String combined = currentMessage.toLowerCase();
+        // check history for recent preference
+        for (int i = Math.max(0, history.size() - 4); i < history.size(); i++) {
+            if (history.get(i).getRole().equals("USER")) {
+                combined += " " + history.get(i).getContent().toLowerCase();
+            }
+        }
+        
+        return combined.contains("don't suggest") || 
+               combined.contains("no remedies") || 
+               combined.contains("just talk") ||
+               combined.contains("talk normally") ||
+               combined.contains("don't give me advice");
     }
 }
