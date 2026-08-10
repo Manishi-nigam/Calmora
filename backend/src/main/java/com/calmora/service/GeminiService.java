@@ -15,14 +15,46 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
+    @Value("${gemini.model:gemini-1.5-flash-latest}")
+    private String configuredModel;
+
     private final RestTemplate restTemplate;
 
     public GeminiService() {
-        // Configure timeout: 5 seconds connect, 10 seconds read (since prompts might be longer)
+        // Configure timeout: 5 seconds connect, 10 seconds read
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(5000);
         factory.setReadTimeout(10000);
         this.restTemplate = new RestTemplate(factory);
+    }
+
+    @jakarta.annotation.PostConstruct
+    public void listAvailableModels() {
+        try {
+            if (apiKey == null || apiKey.isBlank()) {
+                System.out.println("[AI-DEBUG] GEMINI_API_KEY is blank. Skipping model list.");
+                return;
+            }
+            
+            System.out.println("\n[AI-DEBUG] FETCHING AVAILABLE GEMINI MODELS...");
+            String url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + apiKey;
+            
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                System.out.println("[AI-DEBUG] AVAILABLE GEMINI MODELS:");
+                List<Map<String, Object>> models = (List<Map<String, Object>>) response.getBody().get("models");
+                for (Map<String, Object> model : models) {
+                    String name = (String) model.get("name");
+                    List<String> methods = (List<String>) model.get("supportedGenerationMethods");
+                    System.out.println("  - MODEL: " + name);
+                    System.out.println("    SUPPORTED METHODS: " + methods);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[AI-DEBUG] Failed to list Gemini models: " + e.getMessage());
+        }
+        System.out.println("\n[AI-DEBUG] CONFIGURATION: Using model = " + configuredModel + "\n");
     }
 
     /**
@@ -33,9 +65,12 @@ public class GeminiService {
             System.out.println("[AI-DEBUG] GeminiService reached");
             System.out.println("[AI-DEBUG] Gemini API key configured = " + (apiKey != null && !apiKey.isBlank()));
             System.out.println("[AI-DEBUG] GEMINI_API_KEY length = " + (apiKey != null ? apiKey.length() : 0));
+            System.out.println("[AI-DEBUG] GEMINI MODEL = " + configuredModel);
+            System.out.println("[AI-DEBUG] GEMINI API VERSION = v1beta");
             
             // Using a stable supported model for conversational flows
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/" + configuredModel + ":generateContent?key=" + apiKey;
+            System.out.println("[AI-DEBUG] GEMINI ENDPOINT = " + url.replace(apiKey, "REDACTED_KEY"));
 
             // 1. System Instruction Node
             Map<String, Object> systemInstruction = new HashMap<>();
@@ -73,8 +108,8 @@ public class GeminiService {
             body.put("generationConfig", generationConfig);
             
             System.out.println("[AI-DEBUG] CALLING GEMINI");
-            System.out.println("[AI-DEBUG] MODEL = gemini-1.5-flash");
-            System.out.println("[AI-DEBUG] API URL = https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent");
+            System.out.println("[AI-DEBUG] MODEL = " + configuredModel);
+            System.out.println("[AI-DEBUG] API URL = https://generativelanguage.googleapis.com/v1beta/models/" + configuredModel + ":generateContent");
             System.out.println("[AI-DEBUG] REQUEST BODY = " + body);
 
             HttpHeaders headers = new HttpHeaders();
