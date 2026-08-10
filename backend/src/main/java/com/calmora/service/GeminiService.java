@@ -15,7 +15,7 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    @Value("${gemini.model:gemini-1.5-flash-latest}")
+    @Value("${gemini.model:gemini-3.5-flash}")
     private String configuredModel;
 
     private final RestTemplate restTemplate;
@@ -95,21 +95,15 @@ public class GeminiService {
             currentContent.put("parts", List.of(Map.of("text", currentUserMessageText)));
             contents.add(currentContent);
 
-            // 3. Generation Config
-            Map<String, Object> generationConfig = new HashMap<>();
-            generationConfig.put("temperature", 0.2); // Low temperature for consistency
-            generationConfig.put("topK", 40);
-            generationConfig.put("topP", 0.95);
-
-            // 4. Assemble Request Body
+            // 3. Assemble Request Body (Generation Config removed for Gemini 3.x compatibility)
             Map<String, Object> body = new HashMap<>();
             body.put("systemInstruction", systemInstruction);
             body.put("contents", contents);
-            body.put("generationConfig", generationConfig);
-            
+
             System.out.println("[AI-DEBUG] CALLING GEMINI");
             System.out.println("[AI-DEBUG] MODEL = " + configuredModel);
             System.out.println("[AI-DEBUG] API URL = https://generativelanguage.googleapis.com/v1beta/models/" + configuredModel + ":generateContent");
+            System.out.println("[AI-DEBUG] HTTP METHOD = POST");
             System.out.println("[AI-DEBUG] REQUEST BODY = " + body);
 
             HttpHeaders headers = new HttpHeaders();
