@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -58,8 +57,6 @@ public class ConversationContextService {
         if (allMessages.size() > MAX_CONTEXT_MESSAGES) {
             recentMessages = allMessages.subList(allMessages.size() - MAX_CONTEXT_MESSAGES, allMessages.size());
             conversationSummary = "The user has been having a continuous conversation. Previous context might be omitted for brevity.";
-            // In a fully developed implementation, we would call an LLM here to summarize:
-            // allMessages.subList(0, allMessages.size() - MAX_CONTEXT_MESSAGES)
         } else {
             recentMessages = allMessages;
         }
@@ -67,12 +64,46 @@ public class ConversationContextService {
         // 4. Build Prompt
         String prompt = promptBuilder.buildMentalHealthPrompt(recentMessages, conversationSummary, userMessageText);
 
-        System.out.println("--- Prompt Built for User " + user.getId() + " ---");
-        System.out.println("Prompt length: " + prompt.length() + " chars");
-        System.out.println("History included: " + recentMessages.size() + " messages");
+        // ==========================================
+        // DEVELOPMENT LOGGING
+        // ==========================================
+        System.out.println("\n=== AI REQUEST ===");
+        System.out.println("userId: " + user.getId());
+        System.out.println("conversationKey: " + conversation.getId());
+        System.out.println("historySize: " + recentMessages.size());
+        System.out.println("\n--- PROMPT START ---\n" + prompt + "\n--- PROMPT END ---");
+        // ==========================================
 
         // 5. Call LLM
         String aiResponseText = geminiService.getReply(prompt);
+
+        // ==========================================
+        // RESPONSE VALIDATION & RETRY
+        // ==========================================
+        if (aiResponseText != null && !aiResponseText.isBlank()) {
+            boolean isUserNegative = userMessageText.toLowerCase().contains("not") 
+                    || userMessageText.toLowerCase().contains("bad") 
+                    || userMessageText.toLowerCase().contains("irritated")
+                    || userMessageText.toLowerCase().contains("angry")
+                    || userMessageText.toLowerCase().contains("sad");
+                    
+            boolean isResponseOverlyPositive = aiResponseText.toLowerCase().contains("that's wonderful") 
+                    || aiResponseText.toLowerCase().contains("celebrate")
+                    || aiResponseText.toLowerCase().contains("that's great")
+                    || aiResponseText.toLowerCase().contains("keep doing what makes you feel good");
+
+            if (isUserNegative && isResponseOverlyPositive) {
+                System.out.println("WARNING: Context validation failed! Regenerating response...");
+                
+                String correctionPrompt = prompt + "\n\n" + 
+                        "SYSTEM CORRECTION: The previous response you generated was overly positive and contradicted the user's negative state. " +
+                        "Generate a new response that directly acknowledges the user's stated emotion and does NOT force positivity.";
+                
+                aiResponseText = geminiService.getReply(correctionPrompt);
+            }
+        }
+
+        System.out.println("\n=== AI RESPONSE ===\n" + aiResponseText + "\n===================");
 
         if (aiResponseText == null || aiResponseText.isBlank()) {
             return null; // Let controller handle fallback

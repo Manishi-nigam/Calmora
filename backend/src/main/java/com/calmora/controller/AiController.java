@@ -45,6 +45,11 @@ public class AiController {
     private String getRuleBasedReply(String userMessage) {
         String msg = userMessage.toLowerCase();
 
+        // Handle negation first
+        if (msg.contains("not feeling good") || msg.contains("not happy") || msg.contains("don't feel good")) {
+            return "I'm sorry you're not feeling your best today. I'm here for you. 💙";
+        }
+
         if (msg.contains("stress") || msg.contains("pressure")) {
             return "Try deep breathing for 2 minutes. Close your eyes and count to 5 slowly. You're doing your best! 💪";
 
@@ -54,14 +59,14 @@ public class AiController {
         } else if (msg.contains("anxious") || msg.contains("anxiety") || msg.contains("worried")) {
             return "Try the 5-4-3-2-1 grounding technique: notice 5 things you see, 4 you hear, 3 you touch, 2 you smell, 1 you taste. 🌿";
 
-        } else if (msg.contains("angry") || msg.contains("frustrated")) {
-            return "Take a moment to breathe deeply. Count to 10 before reacting. A short walk can help too. 🧘";
+        } else if (msg.contains("angry") || msg.contains("frustrated") || msg.contains("irritated")) {
+            return "It's completely understandable to feel that way. Take a moment to breathe deeply. Count to 10 before reacting. 🧘";
 
         } else if (msg.contains("tired") || msg.contains("exhausted") || msg.contains("sleep")) {
             return "Rest is important. Try calming music or dim your lights. A 20-minute nap can help! 😴";
 
         } else if (msg.contains("happy") || msg.contains("good") || msg.contains("great")) {
-            return "That's wonderful! Keep doing what makes you feel good. Celebrate the small wins! 🎉";
+            return "I'm glad to hear that! Keep focusing on what brings you joy. 🎉";
 
         } else if (msg.contains("lonely") || msg.contains("alone")) {
             return "You are valued and loved. Try reaching out to someone you trust. I'm always here! 🤝";
@@ -73,7 +78,7 @@ public class AiController {
             return "You're welcome! Taking care of your mental health is a sign of strength. 💛";
 
         } else {
-            return "I'm here to support you. Tell me more about how you're feeling. 🌈";
+            return "I hear you. I'm here to support you. Could you tell me a little more? 🌈";
         }
     }
 }
