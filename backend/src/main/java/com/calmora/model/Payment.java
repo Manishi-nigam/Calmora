@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "payment")
+@Table(name = "payments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,11 +46,14 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
     private String currency;
-    private int appointmentId;
+    private Long appointmentId;
     private Long therapistId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name="updated_at")
+private LocalDateTime updatedAt;
 
 }

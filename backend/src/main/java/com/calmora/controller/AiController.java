@@ -2,9 +2,7 @@ package com.calmora.controller;
 
 import com.calmora.DTO.ai.AiRequestDTO;
 import com.calmora.DTO.ai.AiResponseDTO;
-import com.calmora.model.AiRequest;
-import com.calmora.model.AiResponse;
-import com.calmora.service.GeminiService;
+import com.calmora.service.ConversationContextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class AiController {
 
     @Autowired
-    private GeminiService geminiService;
-
+    private ConversationContextService conversationContextService;
 
     @PostMapping
     public AiResponseDTO chat(@RequestBody AiRequestDTO request) {
@@ -26,15 +23,19 @@ public class AiController {
 
         String userMessage = request.getMessage().trim();
 
-        // Try Gemini AI first
-        String geminiReply = geminiService.getReply(userMessage);
-
-        if (geminiReply != null && !geminiReply.isBlank()) {
-            // Check if Gemini flagged as irrelevant
-            if (geminiReply.trim().toUpperCase().contains("IRRELEVANT")) {
-                return new AiResponseDTO("I'm here to support your mental wellness. Let's talk about how you're feeling! 🌈");
+        try {
+            // Try Gemini AI first using Context Service
+            String aiReply = conversationContextService.processUserMessage(userMessage);
+            
+            if (aiReply != null && !aiReply.isBlank()) {
+                // Check if Gemini flagged as irrelevant (keep this logic if you want)
+                if (aiReply.trim().toUpperCase().contains("IRRELEVANT")) {
+                    return new AiResponseDTO("I'm here to support your mental wellness. Let's talk about how you're feeling! 🌈");
+                }
+                return new AiResponseDTO(aiReply);
             }
-            return new AiResponseDTO(geminiReply);
+        } catch (Exception e) {
+            System.err.println("Error processing AI request: " + e.getMessage());
         }
 
         // Fallback to rule-based response

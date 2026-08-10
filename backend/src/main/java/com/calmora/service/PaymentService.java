@@ -63,7 +63,7 @@ public class PaymentService {
             payment.setAmount(request.getAmount());
             payment.setCurrency(request.getCurrency() != null ? request.getCurrency() : "INR");
             payment.setStatus(status.PENDING);
-            payment.setAppointmentId(request.getAppointmentId());
+            payment.setAppointmentId((long) request.getAppointmentId());
             payment.setTherapistId(request.getTherapistId());
             payment.setCreatedAt(LocalDateTime.now());
             payment.setUser(user);
@@ -136,7 +136,7 @@ public class PaymentService {
                 payment.getStatus() != null ? payment.getStatus().name() : null,
                 payment.getAmount(),
                 payment.getCurrency(),
-                payment.getAppointmentId(),
+                payment.getAppointmentId() != null ? payment.getAppointmentId().intValue() : 0,
                 payment.getTherapistId(),
                 payment.getCreatedAt()
         );
